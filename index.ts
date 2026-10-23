@@ -1,8 +1,8 @@
 import path from "node:path";
 import type { Browser, BrowserContext, Page } from "playwright";
 import { chromium } from "playwright";
-import { detectSupportedImageMimeTypeFromFile, resizeImage, type ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { Type } from "@mariozechner/pi-ai";
+import { detectSupportedImageMimeTypeFromFile, resizeImage, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { Type } from "@earendil-works/pi-ai";
 
 export default function browserToolsExtension(pi: ExtensionAPI) {
 	let browser: Browser | undefined;

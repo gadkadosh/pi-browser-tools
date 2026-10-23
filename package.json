@@ -1,6 +1,19 @@
 {
-  "name": "browser-tools",
+  "name": "pi-browser-tools",
   "private": true,
+  "description": "Personal Pi extension for browser inspection and interaction with Playwright Chromium",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gadkadosh/pi-browser-tools.git"
+  },
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
   "scripts": {
     "test": "node --test test/*.test.mjs"
   },

@@ -3,6 +3,32 @@
 Pi extension using Playwright Chromium with one temporary browser context and active page.
 Call `browser_open` before using the page tools. `browser_close`, `/browser-reset`, and session shutdown close the browser; `/browser-status` reports its state.
 
+## Installation
+
+Requires [Pi](https://github.com/earendil-works/pi) and Playwright's Chromium. Tested with Pi **1.4.0**, Playwright **1.61.1**, and Node.js **26.12.1** on macOS. This is a personal extension; compatibility with other versions and platforms is not guaranteed.
+
+```sh
+pi install git:github.com/gadkadosh/pi-browser-tools
+npx --yes --package=playwright@1.61.1 playwright install chromium
+```
+
+The second command installs the browser binary matching the locked Playwright version. Linux may also need system dependencies (`playwright install --with-deps chromium`). Restart Pi or run `/reload`, then ask it to open a page and inspect or interact with it. The tools are `browser_open`, `browser_screenshot`, `browser_eval`, `browser_click`, `browser_type`, and `browser_close`.
+
+To update or remove:
+
+```sh
+pi update git:github.com/gadkadosh/pi-browser-tools
+pi remove git:github.com/gadkadosh/pi-browser-tools
+```
+
+If you already load a local copy, remove or disable that copy before installing from GitHub to avoid duplicate tools.
+
+## Security
+
+This extension runs with Pi's operating-system permissions. It can visit sites (including local services), execute JavaScript in pages, click controls, fill forms, and write screenshots to the requested filesystem path. Page content and screenshots returned by tools may be sent to your model provider.
+
+Each browser starts with a temporary context, not your normal browser profile. If you sign in during a session, the tools can act as that account until you close/reset the browser. Page content is untrusted; review sensitive actions and do not expose credentials or private pages unless you intend to share them with your model provider. Closing discards temporary browser storage, but does not delete saved screenshots or Pi's conversation history.
+
 ## Browser mode and execution
 
 `headless` selects the mode when `browser_open` launches Chromium (default `true`). On an active browser, omit it to keep the current mode or explicitly request the same mode. An explicit different mode fails **before navigation or resizing** and preserves the current page and storage. Call `browser_close` or `/browser-reset` before changing modes; closing discards temporary browser state.
@@ -44,6 +70,8 @@ Reload Pi (`/reload`) after editing the extension.
 
 ## Verification
 
+For local development, clone the repository and run `npm ci --legacy-peer-deps` to install Playwright without installing a second copy of Pi's host-provided packages. Install Chromium as above.
+
 With Pi's SDK available to Node, run `npm test`. Otherwise point the test at the installed `@earendil-works/pi-coding-agent` package directory:
 
 ```sh
@@ -51,3 +79,7 @@ PI_PACKAGE_DIR=/path/to/pi-coding-agent npm test
 ```
 
 The tests load this extension through Pi's real SDK and execute its tools in Chromium. Correctness tests feed scripted assistant responses through Pi's actual scheduler (no model calls), verify ordered page operations and screenshot output, and check that unrelated-only batches still overlap. They exercise both headed/headless mode handling, preservation of page state after rejected changes, close/reset/shutdown recovery, and strict click/fill targets with real side-effect assertions. These tests briefly open visible Chromium windows and require a graphical session. Evaluation tests cover expressions, functions, promises, errors, and one-time side effects. The screenshot test uses a local HTTP fixture and checks viewport changes before navigation, desktop/mobile screenshot dimensions, default dimensions, repeated opens, and preserved session storage. It decodes returned images, checks visible pixel colors, verifies saved originals, and covers viewport, full-page (explicit/default), element, wide-element, JPEG, relative/absolute paths, and closed-page behavior. Chromium must be installed for the extension's Playwright version (`npx playwright install chromium` if needed). No model credentials are needed for this test.
+
+## License
+
+[MIT](LICENSE).
